@@ -1,0 +1,1 @@
+Obligatory Input Simulator
