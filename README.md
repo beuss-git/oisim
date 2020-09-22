@@ -1,4 +1,7 @@
 # Obligatory Input Simulator
+A small helper tool to solve the obligatories more efficiently.
+It will automatically inject keystrokes based on config.json so you don't have to manually type in all the data/commands every time you rerun your application it.
+Hopefully it will speed up the debugging process a bit :)
 
 ## Configuration
 All the input configuration is based on virtual key codes which you can find [here](http://cherrytree.at/misc/vk.htm)
@@ -13,25 +16,25 @@ All the input configuration is based on virtual key codes which you can find [he
 
 ## Explaining the Default Config Settings
 ##### settings
-`"activation_key": 121` sets the activation key to 121 (F10)
+`"activation_key": 121` sets the activation key to F10.
 
-`"exit_key": 123` sets the exit key to 123 (F12)
+`"exit_key": 123` sets the exit key to F12.
 
-`"default_delay": 10` sets the default delay to 10 milliseconds
+`"default_delay": 10` sets the default delay to 10 milliseconds.
 
-`"automatic_newline": false` disables automatic newlines when the command is finished
+`"automatic_newline": false` disables automatic newlines when the command is finished.
 
 ##### commands
 `["L\n"]` will inject the single character 'L' and a newline (enter key) after it.
 
-`["L"], ["L"]` will inject two 'L' characters on the same line
+`["L"], ["L"]` will inject two 'L' characters on the same line.
 
-`["L", 100]` will first wait 100 milliseconds, then inject the single character 'L'
+`["L", 100]` will first wait 100 milliseconds, then inject the single character 'L'.
 
 `["The Lord of the Rings: The Return of the King\n", 10]` will wait 10 milliseconds, then inject the string "The Lord of the Rings: The Return of the King" and then inject a newline.
 
 ## Usage
-In order to use it you just have to put config.json within the same folder as the executable and then run the executable.
+In order to use it you just have to put config.json within the same folder as the executable and then run execute it.
 
 
 

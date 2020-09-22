@@ -107,6 +107,8 @@ void Simulator::do_work() const {
 			my_sleep(default_delay_);
 		}
 
+		std::wcout << L"Injecting: " << command << L"\n";
+
 		send_data(command);
 	}
 }
