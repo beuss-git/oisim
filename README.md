@@ -34,7 +34,7 @@ All the input configuration is based on virtual key codes which you can find [he
 `["The Lord of the Rings: The Return of the King\n", 10]` will wait 10 milliseconds, then inject the string "The Lord of the Rings: The Return of the King" and then inject a newline.
 
 ## Usage
-In order to use it you just have to put config.json within the same folder as the executable and then run execute it.
+In order to use it you just have to put config.json within the same folder as the executable and then run it.
 
 
 
