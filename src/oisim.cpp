@@ -1,6 +1,8 @@
 #include "InputSimulator.h"
+#include "KeyPrinter.h"
 
 int main() {
+	//KeyPrinter::start();
 	Simulator simulator;
 	simulator.load_json_file("config.json");
 

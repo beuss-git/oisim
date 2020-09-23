@@ -6,10 +6,10 @@
 #include <vector>
 #include <Windows.h>
 #include <fstream>
+#include <iomanip>
 
 #include "Utf8Utils.h"
-
-extern std::unordered_map<wchar_t, int> character_map;
+#include "termcolor.hpp"
 
 Simulator::Simulator(const int activation_key, const int exit_key) : activation_key_(activation_key), exit_key_(exit_key) {
 	std::locale::global(std::locale(""));
@@ -18,7 +18,9 @@ Simulator::Simulator(const int activation_key, const int exit_key) : activation_
 void Simulator::start() const {
 	while (true) {
 		if (check_activation_key()) {
+			std::cout << termcolor::cyan << "\nStarting input injection...\n";
 			do_work();
+			std::cout << termcolor::cyan << "Finished input injection\n";
 		} else if (check_exit_key()) {
 			return;
 		}
@@ -31,9 +33,14 @@ template <typename T>
 T get_setting(const nlohmann::json j, const std::string& setting_name) {
 	try {
 		const auto& settings = j["settings"];
-		return settings[setting_name].get<T>();
+		const auto value = settings[setting_name].get<T>();
+
+		std::cout << '\t' << termcolor::yellow << setting_name << termcolor::white << 
+			": " << std::setw(20 - setting_name.length()) << termcolor::white << value << "\n";
+
+		return value;
 	} catch (const std::exception& e) {
-		std::cout << "There was an error finding " << setting_name << "\n";
+		std::cout << termcolor::red << "There was an error finding " << termcolor::white << setting_name << "\n";
 		std::cout << e.what() << "\n";
 		return T{};
 	}
@@ -41,17 +48,21 @@ T get_setting(const nlohmann::json j, const std::string& setting_name) {
 
 void Simulator::load_json_file(const std::string& file_path) {
 	std::ifstream i(file_path);
+	std::cout << termcolor::green << "Loading file: " << termcolor::white << file_path << "\n";
+	
 	if (i.fail()) {
-		std::cout << "The config file \"" << file_path << "\" doesn't exist\n";
+		std::cout << termcolor::red << "The config file \"" << file_path << "\" doesn't exist\n";
 		return;
 	}
 	json j;
 	try {
 		i >> j;
 	} catch (const std::exception& e) {
-		std::cout << e.what() << "\n";
+		std::cout << termcolor::red << e.what() << "\n";
 		return;
 	}
+
+	std::cout << termcolor::bold << termcolor::green << "\nSettings:\n";
 
 	// get the settings
 	activation_key_ = get_setting<int>(j, "activation_key");
@@ -64,30 +75,30 @@ void Simulator::load_json_file(const std::string& file_path) {
 		std::string command_string;
 
 		try {
+			command_string = command[0].get<std::string>();
+
 			if (command.size() > 1) {
 				delay = command[1].get<int>();
 			}
-			command_string = command[0].get<std::string>();
 		} catch (const std::exception& e) {
-			std::cout << e.what() << "\n";
+			std::cout << termcolor::red << e.what() << "\n";
 			return;
 		}
 
 		add_command(command_string, delay);
 	}
-
 }
 
-void Simulator::add_command(const std::string& data, int delay) {
+void Simulator::add_command(const std::string& data, const int delay) {
 	add_command(utf8_decode(data), delay);
 }
 
-void Simulator::add_command(const std::wstring& data, int delay) {
+void Simulator::add_command(const std::wstring& data, const int delay) {
 	commands_.emplace_back(std::make_pair(data, delay));
 }
 
-bool Simulator::is_key_pressed(int keycode) {
-	return GetAsyncKeyState(keycode) & 0x8000;
+bool Simulator::is_key_pressed(const int keycode) {
+	return GetAsyncKeyState(keycode) & 0x0001;
 }
 
 bool Simulator::check_activation_key() const {
@@ -107,7 +118,8 @@ void Simulator::do_work() const {
 			my_sleep(default_delay_);
 		}
 
-		std::wcout << L"Injecting: " << command << L"\n";
+		std::cout << termcolor::green << "Injecting: " << termcolor::white;
+		std::wcout << command << (command[command.length() - 1] != L'\n' ? L"\n" : L"");
 
 		send_data(command);
 	}
@@ -116,100 +128,33 @@ void Simulator::do_work() const {
 void Simulator::send_data(const std::wstring& str) {
 	for (const auto c : str) {
 		try {
-			const int keycode = character_map.at(toupper(c));
-
-			const bool should_shift = isupper(c);
-
-			send_keycode(keycode, should_shift);
+			send_keycode(c);
 		} catch (std::out_of_range& e) {
 			std::cout << e.what() << "\n";
-			std::cout << "Character \'" << c << '\'' << " is not supported\n";
+			std::cout << termcolor::red << "Character \'" << termcolor::white;
+			std::wcout << c;
+			std::cout << termcolor::red << '\'' << " is not supported\n";
 		}
 	}
 }
 
-void Simulator::send_keycode(int keycode, bool should_shift) {
-	INPUT ip;
+void Simulator::send_keycode(const wchar_t ch) {
+	INPUT ip{};
 	ip.type = INPUT_KEYBOARD;
-	ip.ki.wScan = 0;
-	ip.ki.time = 0;
-	ip.ki.dwExtraInfo = 0;
-
-	if (should_shift) {
-		// press shift key;
-		ip.ki.dwFlags = KEYEVENTF_SCANCODE;
-		ip.ki.wScan = MapVirtualKey(VK_LSHIFT, 0);
-		SendInput(1, &ip, sizeof(INPUT));
-	}
 
 	// press key
-	ip.ki.wVk = keycode;
-	ip.ki.dwFlags = 0;
+	if (ch == L'\n') {
+		ip.ki.wVk = 13;
+	} else {
+		ip.ki.wScan = ch;
+		ip.ki.dwFlags = KEYEVENTF_UNICODE;
+	}
 	SendInput(1, &ip, sizeof(INPUT));
 
 	// release key
 	ip.ki.dwFlags = KEYEVENTF_KEYUP;
 	SendInput(1, &ip, sizeof(INPUT));
-
-	if (should_shift) {
-		// release shift key;
-		ip.ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
-		ip.ki.wScan = MapVirtualKey(VK_LSHIFT, 0);
-		SendInput(1, &ip, sizeof(INPUT));
-	}
 }
-
 void Simulator::my_sleep(int ms) {
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
-
-std::unordered_map<wchar_t, int> character_map = {
-	{L'\t', 9},
-	{L'\n', 13},
-	{L' ', 32},
-	{L'0', 48},
-	{L'1', 49},
-	{L'2', 50},
-	{L'3', 51},
-	{L'4', 52},
-	{L'5', 53},
-	{L'6', 54},
-	{L'7', 55},
-	{L'8', 56},
-	{L'9', 57},
-	{L'A', 65},
-	{L'B', 66},
-	{L'C', 67},
-	{L'D', 68},
-	{L'E', 69},
-	{L'F', 70},
-	{L'G', 71},
-	{L'H', 72},
-	{L'I', 73},
-	{L'J', 74},
-	{L'K', 75},
-	{L'L', 76},
-	{L'M', 77},
-	{L'N', 78},
-	{L'O', 79},
-	{L'P', 80},
-	{L'Q', 81},
-	{L'R', 82},
-	{L'S', 83},
-	{L'T', 84},
-	{L'U', 85},
-	{L'V', 86},
-	{L'W', 87},
-	{L'X', 88},
-	{L'Y', 89},
-	{L'Z', 90},
-	{L'Æ', 222},
-	{L'Ø', 192},
-	{L'Å', 221},
-	{L'\'', 191},
-	{L'*', 106},
-	{L'+', 107 },
-	{L'-', 109},
-	{L'.', 110},
-	{L'/', 111}
-};

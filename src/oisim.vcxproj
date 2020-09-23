@@ -24,6 +24,7 @@
     <ProjectGuid>{ac857638-3c41-4bba-9e82-de9ef8775bff}</ProjectGuid>
     <RootNamespace>obliginputsimulator</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>oisim</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -72,11 +73,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>ObligInputSim</TargetName>
+    <TargetName>oisim</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>ObligInputSim</TargetName>
+    <TargetName>oisim</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -146,11 +147,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="InputSimulator.cpp" />
-    <ClCompile Include="ObligInputSimulator.cpp" />
+    <ClCompile Include="oisim.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputSimulator.h" />
     <ClInclude Include="json.hpp" />
+    <ClInclude Include="KeyPrinter.h" />
+    <ClInclude Include="termcolor.hpp" />
     <ClInclude Include="Utf8Utils.h" />
   </ItemGroup>
   <ItemGroup>

@@ -14,7 +14,7 @@ All the input configuration is based on virtual key codes which you can find [he
 |automatic_newline | If this is set to true, it will automatically add a new line with each command (you don't need to add \n at the end)|
 
 
-## Explaining the Default Config Settings
+#### Explaining the Default Config Settings
 ##### settings
 `"activation_key": 121` sets the activation key to F10.
 
@@ -27,18 +27,15 @@ All the input configuration is based on virtual key codes which you can find [he
 ##### commands
 `["L\n"]` will inject the single character 'L' and a newline (enter key) after it.
 
-`["L"], ["L"]` will inject two 'L' characters on the same line.
+`["L"]` will inject the single character 'L'.
 
-`["L", 100]` will first wait 100 milliseconds, then inject the single character 'L'.
+`["L", 100]` will first wait 100 milliseconds and then inject the single character 'L'.
 
 `["The Lord of the Rings: The Return of the King\n", 10]` will wait 10 milliseconds, then inject the string "The Lord of the Rings: The Return of the King" and then inject a newline.
 
 ## Usage
 In order to use it you just have to put config.json within the same folder as the executable and then run it.
 
-
-
-
-
-
-
+## Future
+I will update this with the new obligatories when they are released.
+And I will also add new features if they help improve the tool in any way, so let me know.

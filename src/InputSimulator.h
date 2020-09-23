@@ -34,7 +34,7 @@ private:
 
 	static void send_data(const std::wstring& str);
 
-	static void send_keycode(int keycode, bool should_shift);
+	static void send_keycode(wchar_t ch);
 
 	static void my_sleep(int ms);
 protected:

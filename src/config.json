@@ -1,0 +1,39 @@
+{
+	"settings": {
+		"activation_key": 121,
+		"exit_key": 123,
+		"default_delay": 10,
+		"automatic_newline": false
+	},
+	"commands": [
+		["L\n", 10],
+		["Ringenes Herre - Atter en konge\n", 10],
+		["201\n", 10],
+		["2\n", 10],
+
+		["l\n"],
+		["Flåklypa\n"],
+		["88\n"],
+		["1\n"],
+
+		["s\n"],
+
+		["B\n"],
+		["1\n"],
+		["23\n"],
+
+		["b\n"],
+		["2\n"],
+		["4\n"],
+
+		["b\n"],
+		["1\n"],
+		["8\n"],
+
+		["Q\n"],
+		["31\n"],
+		["4\n"]
+
+	]
+
+}
