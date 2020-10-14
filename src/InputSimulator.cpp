@@ -15,13 +15,22 @@ Simulator::Simulator(const int activation_key, const int exit_key) : activation_
 	std::locale::global(std::locale(""));
 }
 
-void Simulator::start() const {
+void Simulator::start(const std::string& file_path){
+	if (!file_path.empty()) {
+		config_file_path_ = file_path;
+		load_json_file();
+	}
+
 	while (true) {
-		if (check_activation_key()) {
+		if (is_key_pressed(activation_key_)){
 			std::cout << termcolor::cyan << "\nStarting input injection...\n";
 			do_work();
 			std::cout << termcolor::cyan << "Finished input injection\n";
-		} else if (check_exit_key()) {
+		}
+		else if (is_key_pressed(reload_config_key_)) {
+			load_json_file();
+		}
+		else if (is_key_pressed(exit_key_)) {
 			return;
 		}
 
@@ -46,12 +55,17 @@ T get_setting(const nlohmann::json j, const std::string& setting_name) {
 	}
 }
 
-void Simulator::load_json_file(const std::string& file_path) {
-	std::ifstream i(file_path);
-	std::cout << termcolor::green << "Loading file: " << termcolor::white << file_path << "\n";
+void Simulator::load_json_file() {
+	if (config_file_path_.empty()) {
+		std::cout << termcolor::red << "No file path set\n";
+		return;
+	}
+
+	std::ifstream i(config_file_path_);
+	std::cout << termcolor::green << "Loading file: " << termcolor::white << config_file_path_ << "\n";
 	
 	if (i.fail()) {
-		std::cout << termcolor::red << "The config file \"" << file_path << "\" doesn't exist\n";
+		std::cout << termcolor::red << "The config file \"" << config_file_path_ << "\" doesn't exist\n";
 		return;
 	}
 	json j;
@@ -67,8 +81,11 @@ void Simulator::load_json_file(const std::string& file_path) {
 	// get the settings
 	activation_key_ = get_setting<int>(j, "activation_key");
 	exit_key_ = get_setting<int>(j, "exit_key");
+	reload_config_key_ = get_setting<int>(j, "reload_config_key");
 	automatic_newline_ = get_setting<bool>(j, "automatic_newline");
 	default_delay_ = get_setting<int>(j, "default_delay");
+
+	commands_.clear();
 
 	for (const auto& command : j["commands"]) {
 		int delay = -1;
@@ -121,40 +138,37 @@ void Simulator::do_work() const {
 		std::cout << termcolor::green << "Injecting: " << termcolor::white;
 		std::wcout << command << (command[command.length() - 1] != L'\n' ? L"\n" : L"");
 
-		send_data(command);
+		auto final_command = command;
+		if (automatic_newline_) {
+			final_command.push_back(L'\n');
+		}
+		send_data(final_command);
 	}
 }
 
 void Simulator::send_data(const std::wstring& str) {
+	std::vector<INPUT> inputs;
 	for (const auto c : str) {
-		try {
-			send_keycode(c);
-		} catch (std::out_of_range& e) {
-			std::cout << e.what() << "\n";
-			std::cout << termcolor::red << "Character \'" << termcolor::white;
-			std::wcout << c;
-			std::cout << termcolor::red << '\'' << " is not supported\n";
+
+		INPUT ip{};
+		ip.type = INPUT_KEYBOARD;
+
+		if (c == L'\n') {
+			ip.ki.wVk = 13;
 		}
+		else {
+			ip.ki.wScan = c;
+			ip.ki.dwFlags = KEYEVENTF_UNICODE;
+		}
+
+		inputs.emplace_back(ip);
+		ip.ki.dwFlags = KEYEVENTF_KEYUP;
+		inputs.emplace_back(ip);
 	}
+
+	SendInput(inputs.size(), inputs.data(), sizeof(INPUT));
 }
 
-void Simulator::send_keycode(const wchar_t ch) {
-	INPUT ip{};
-	ip.type = INPUT_KEYBOARD;
-
-	// press key
-	if (ch == L'\n') {
-		ip.ki.wVk = 13;
-	} else {
-		ip.ki.wScan = ch;
-		ip.ki.dwFlags = KEYEVENTF_UNICODE;
-	}
-	SendInput(1, &ip, sizeof(INPUT));
-
-	// release key
-	ip.ki.dwFlags = KEYEVENTF_KEYUP;
-	SendInput(1, &ip, sizeof(INPUT));
-}
 void Simulator::my_sleep(int ms) {
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }

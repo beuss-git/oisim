@@ -4,7 +4,6 @@
 int main() {
 	//KeyPrinter::start();
 	Simulator simulator;
-	simulator.load_json_file("config.json");
 
 	//simulator.add_command("L\n", 10);
 	//	simulator.add_command("Ringenes Herre - Atter en konge\n", 10);
@@ -34,5 +33,5 @@ int main() {
 	//	simulator.add_command("31\n", 10);
 	//	simulator.add_command("4\n", 10);
 
-	simulator.start();
+	simulator.start("config.json");
 }

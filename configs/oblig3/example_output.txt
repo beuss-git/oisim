@@ -1,0 +1,52 @@
+Menyvalg:
+        F - Fyll in årstall
+        V - Skriver ut alle valgår
+        L - Leser inn en tekst
+        T - Skriver ut teksten uten vokaler
+Skriv kommando:  V
+Ingen årstall er lagret i arrayet
+Skriv kommando:  F
+        Skriv inn årstall (1961-2030):  1050
+        Årstallet er ikke mellom 1961-2030
+
+        Skriv inn årstall (1961-2030):  2040
+        Årstallet er ikke mellom 1961-2030
+
+        Skriv inn årstall (1961-2030):  1965
+        Skriv inn årstall (1961-2030):  1961
+        Skriv inn årstall (1961-2030):  1962
+        Skriv inn årstall (1961-2030):  1963
+        Skriv inn årstall (1961-2030):  1964
+        Skriv inn årstall (1961-2030):  1965
+        Årstallet er et duplikat
+
+        Skriv inn årstall (1961-2030):  1967
+        Skriv inn årstall (1961-2030):  2015
+        Skriv inn årstall (1961-2030):  2015
+        Årstallet er et duplikat
+
+        Skriv inn årstall (1961-2030):  2017
+Skriv kommando:  2019
+Menyvalg:
+        F - Fyll in årstall
+        V - Skriver ut alle valgår
+        L - Leser inn en tekst
+        T - Skriver ut teksten uten vokaler
+Skriv kommando:  Menyvalg:
+        F - Fyll in årstall
+        V - Skriver ut alle valgår
+        L - Leser inn en tekst
+        T - Skriver ut teksten uten vokaler
+Skriv kommando:  V
+        1965 er det stortingvalg
+        1961 er det stortingvalg
+        1963 er det fylke/kommunevalg
+        1967 er det fylke/kommunevalg
+        2015 er det fylke/kommunevalg
+        2017 er det stortingvalg
+Skriv kommando:  T
+        Teksten er tom
+Skriv kommando:  L
+        Skriv inn en tekst:  abcdefghijklmnopqrstivwxyzæøå
+Skriv kommando:  T
+        bcdfghjklmnpqrstvwxz

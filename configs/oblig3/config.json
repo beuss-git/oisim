@@ -1,0 +1,36 @@
+{
+	"settings": {
+		"activation_key": 121,
+		"exit_key": 123,
+		"reload_config_key": 120,
+		"default_delay": 10,
+		"automatic_newline": true
+	},
+	"commands": [
+		["V"],
+
+		["F"],
+		["1050"],
+		["2040"],
+		["1965"],
+		["1961"],
+		["1962"],
+		["1963"],
+		["1964"],
+		["1965"],
+		["1967"],
+		["2015"],
+		["2015"],
+		["2017"],
+		["2019"],
+	
+		["V"],
+
+		["T"],
+
+		["L"],
+		["abcdefghijklmnopqrstivwxyzæøå"],
+		["T"]
+	]
+
+}
