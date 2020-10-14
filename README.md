@@ -20,6 +20,8 @@ All the input configuration is based on virtual key codes which you can find [he
 
 `"exit_key": 123` sets the exit key to F12.
 
+`"reload_config_key": 120` sets the exit key to F9.
+
 `"default_delay": 10` sets the default delay to 10 milliseconds.
 
 `"automatic_newline": false` disables automatic newlines when the command is finished.
