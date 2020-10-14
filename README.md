@@ -10,6 +10,7 @@ All the input configuration is based on virtual key codes which you can find [he
 |---|---|
 |activation_key | Key used to make it start injecting input into the active window|
 |exit_key | Key used to exit the application|
+|reload_config_key | Key used to reload the current config file|
 |default_delay | If you don't specify a delay in the command, then this value will be used|
 |automatic_newline | If this is set to true, it will automatically add a new line with each command (you don't need to add \n at the end)|
 
