@@ -92,10 +92,10 @@ void Simulator::load_json_file() {
 		std::string command_string;
 
 		try {
-			command_string = command[0].get<std::string>();
+			command_string = command.at(0).get<std::string>();
 
 			if (command.size() > 1) {
-				delay = command[1].get<int>();
+				delay = command.at(1).get<int>();
 			}
 		} catch (const std::exception& e) {
 			std::cout << termcolor::red << e.what() << "\n";
